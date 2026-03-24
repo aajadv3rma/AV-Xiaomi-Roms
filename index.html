@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AV Roms</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="bg-orb orb-c"></div>
+
+  <div class="app-shell">
+    <header class="hero glass-panel">
+      <div class="hero-topline">
+        <span class="pill">Clean UI</span>
+        <span class="pill ghost">Realtime Feed Parser</span>
+      </div>
+
+      <div class="brand-row">
+        <div class="logo-wrap">
+          <div class="logo">AV</div>
+        </div>
+        <div class="brand-copy">
+          <h1>AV Roms</h1>
+          <p>Firmware intelligence with glassmorphism layers and animated material depth.</p>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <label for="deviceInput" class="sr-only">Device codename</label>
+        <input id="deviceInput" type="text" placeholder="Type codename: garnet, moon, spes" autocomplete="off" spellcheck="false">
+        <button id="clearBtn" class="btn-ghost" type="button">Reset</button>
+        <div id="drop" class="dropdown" aria-live="polite"></div>
+      </div>
+
+      <aside class="legal-banner" aria-label="Legal notice">
+        <strong>Important:</strong> This is an unofficial index viewer. Not affiliated with Xiaomi or device brands. Data is displayed from upstream public sources; all trademarks and content rights belong to their respective owners.
+      </aside>
+    </header>
+
+    <main>
+      <section id="status" class="status glass-panel">Loading device index...</section>
+      <section id="wizard" class="wizard"></section>
+    </main>
+
+    <footer class="site-footer glass-panel">
+      <p>
+        Source feed:
+        <a href="https://github.com/XiaomiFirmwareUpdater/miui-updates-tracker" target="_blank" rel="noopener">XiaomiFirmwareUpdater/miui-updates-tracker</a>
+      </p>
+      <p>
+        Legal and attribution details:
+        <a href="NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
+      </p>
+      <p>
+        Policies:
+        <a href="TERMS.md" target="_blank" rel="noopener">Terms of Use</a>
+        |
+        <a href="PRIVACY.md" target="_blank" rel="noopener">Privacy Policy</a>
+      </p>
+      <p class="fine-print">
+        Copyright for this source code belongs to Aajad Verma. Third-party names, marks, and data belong to their respective owners.
+      </p>
+    </footer>
+  </div>
+
+  <template id="chipTemplate">
+    <button class="chip" type="button">
+      <span class="chip-title"></span>
+      <span class="chip-meta"></span>
+    </button>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
