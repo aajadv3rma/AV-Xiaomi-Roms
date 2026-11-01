@@ -13,6 +13,7 @@ const state = {
     version: null,
   },
   listCursor: -1,
+  feedRequestId: 0,
 };
 
 const ui = {
@@ -170,11 +171,15 @@ function chooseDevice(code) {
 
 async function fetchDeviceFeed(code) {
   resetFlow();
+  const requestId = state.feedRequestId;
   setStatus(`Loading feed for ${code}...`);
 
   try {
     const url = FEED_URL.replace("{CODE}", encodeURIComponent(code));
     const res = await fetch(url);
+
+    // Ignore responses from an older selection or a request cancelled by Reset.
+    if (requestId !== state.feedRequestId) return;
 
     if (res.status === 404) {
       throw new Error("Codename not found in source feed.");
@@ -185,8 +190,9 @@ async function fetchDeviceFeed(code) {
     }
 
     const xml = await res.text();
-    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    if (requestId !== state.feedRequestId) return;
 
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
     const items = [...doc.querySelectorAll("item")];
     if (!items.length) {
       throw new Error("This codename has no ROM records.");
@@ -202,7 +208,9 @@ async function fetchDeviceFeed(code) {
     renderFlow();
     persistSession();
   } catch (error) {
-    setStatus(`Feed error: ${error.message}`, true);
+    if (requestId === state.feedRequestId) {
+      setStatus(`Feed error: ${error.message}`, true);
+    }
   }
 }
 
@@ -584,6 +592,7 @@ function filterRoms(filter) {
 }
 
 function resetFlow() {
+  state.feedRequestId += 1;
   state.roms = [];
   state.pick.branch = null;
   state.pick.method = null;
