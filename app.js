@@ -538,8 +538,13 @@ function renderResult(rom) {
     copy.className = "btn secondary";
     copy.textContent = "Copy Link";
     copy.addEventListener("click", async () => {
-      await copyText(rom.mainLink);
-      setStatus("Copied main download URL.");
+      const copied = await copyText(rom.mainLink);
+      setStatus(
+        copied
+          ? "Copied main download URL."
+          : "Could not copy link. Please copy the URL manually.",
+        !copied
+      );
     });
     actions.appendChild(copy);
   }
@@ -645,18 +650,29 @@ function restoreSession() {
 
 async function copyText(text) {
   try {
-    await navigator.clipboard.writeText(text);
-    return;
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
   } catch {
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.style.position = "fixed";
-    area.style.opacity = "0";
+    // Fall back to the legacy copy command when clipboard access is unavailable.
+  }
+
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.position = "fixed";
+  area.style.opacity = "0";
+
+  try {
     document.body.appendChild(area);
     area.focus();
     area.select();
-    document.execCommand("copy");
-    document.body.removeChild(area);
+    return Boolean(document.execCommand("copy"));
+  } catch {
+    return false;
+  } finally {
+    area.remove();
   }
 }
 
