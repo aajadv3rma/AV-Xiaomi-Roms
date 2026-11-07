@@ -353,10 +353,21 @@ function detectBranch(description, version) {
 }
 
 function toHttps(url) {
-  if (!url) {
+  if (typeof url !== "string" || !url.trim()) {
     return null;
   }
-  return url.replace(/^http:\/\//i, "https://");
+
+  try {
+    const parsed = new URL(url.trim());
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null;
+    }
+
+    parsed.protocol = "https:";
+    return parsed.href;
+  } catch {
+    return null;
+  }
 }
 
 function formatDate(raw) {
