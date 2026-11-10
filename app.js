@@ -622,7 +622,7 @@ function resetAll() {
   ui.input.value = "";
   closeDropdown();
   resetFlow();
-  sessionStorage.removeItem(SESSION_KEY);
+  clearSession();
   setStatus("Session reset. Search a codename to start.");
 }
 
@@ -639,11 +639,11 @@ function persistSession() {
     region: state.pick.region,
     version: state.pick.version,
   };
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+  writeSession(payload);
 }
 
 function restoreSession() {
-  const raw = sessionStorage.getItem(SESSION_KEY);
+  const raw = readSession();
   if (!raw) {
     return;
   }
@@ -655,7 +655,32 @@ function restoreSession() {
       ui.input.value = state.pick.code;
     }
   } catch {
+    clearSession();
+  }
+}
+
+function readSession() {
+  try {
+    return sessionStorage.getItem(SESSION_KEY);
+  } catch {
+    // Storage is optional; continue with an empty session when it is blocked.
+    return null;
+  }
+}
+
+function writeSession(payload) {
+  try {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+  } catch {
+    // Keep the app usable when the browser disables session storage.
+  }
+}
+
+function clearSession() {
+  try {
     sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    // Resetting the in-memory state must not depend on browser storage.
   }
 }
 
